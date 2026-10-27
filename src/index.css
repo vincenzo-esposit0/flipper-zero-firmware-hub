@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { color-scheme: dark; font-size: 17px; scroll-behavior: smooth; }
+  @media (min-width: 1280px) { html { font-size: 18px; } }
+  body {
+    @apply bg-void text-ink font-mono antialiased;
+    background-image:
+      radial-gradient(ellipse at top, rgba(0, 255, 102, 0.07), transparent 60%),
+      linear-gradient(rgba(0, 255, 102, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 102, 0.035) 1px, transparent 1px);
+    background-size: 100% 100%, 32px 32px, 32px 32px;
+    background-attachment: fixed;
+  }
+  ::selection { background: #00ff66; color: #050505; }
+  :focus-visible { outline: 1px solid #00e5ff; outline-offset: 2px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #050505; }
+  ::-webkit-scrollbar-thumb { background: #1c2a22; border: 2px solid #050505; }
+}
+
+@layer components {
+  .panel {
+    @apply border border-line bg-panel/80 backdrop-blur-md;
+  }
+  .glow { text-shadow: 0 0 8px currentColor; }
+  .btn {
+    @apply inline-flex min-h-[2.5rem] items-center gap-2 border px-3 py-2 text-sm font-semibold tracking-wide transition
+      disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-neon { @apply border-neon/40 text-neon hover:bg-neon hover:text-void; }
+  .btn-flipper { @apply border-flipper/50 text-flipper hover:bg-flipper hover:text-void; }
+  .btn-cyan { @apply border-cyan/40 text-cyan hover:bg-cyan hover:text-void; }
+  .btn-ghost { @apply border-line text-dim hover:border-ink/40 hover:text-ink; }
+  .chip {
+    @apply min-h-[2.25rem] border px-3 py-1.5 text-sm transition;
+  }
+  .chip-off { @apply border-line text-dim hover:border-neon/40 hover:text-neon; }
+  .chip-on { @apply border-neon bg-neon/10 text-neon shadow-neon; }
+}
+
+/* Effetto CRT: scanline + vignettatura, attivabile dall'header */
+.crt::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0.1) 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
