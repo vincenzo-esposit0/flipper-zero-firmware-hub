@@ -71,3 +71,9 @@ Il token serve solo in build per alzare il rate limit e **non** finisce nel bund
 ## Nota etica
 
 Il progetto ha scopo didattico. Ogni scheda riporta note su uso responsabile, normativa radio e reati informatici. Usa il dispositivo solo su sistemi di tua proprietà o per cui hai autorizzazione scritta.
+
+## License / Licenza
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Questo progetto è distribuito con licenza MIT - consulta il file [LICENSE](LICENSE) per maggiori dettagli.
