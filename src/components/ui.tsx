@@ -1,6 +1,6 @@
 import { Archive, CheckCircle2, CircleDashed, FlaskConical, MinusCircle, XCircle } from 'lucide-react';
 import type { Accent, FeatureLevel, Status } from '../data/types';
-import { STATUSES } from '../data/firmwares';
+import { useI18n } from '../lib/i18n';
 
 export const ACCENT_TEXT: Record<Accent, string> = {
   neon: 'text-neon border-neon/50',
@@ -10,6 +10,7 @@ export const ACCENT_TEXT: Record<Accent, string> = {
 };
 
 export function StatusBadge({ status }: { status: Status }) {
+  const { t } = useI18n();
   const style = {
     attivo: 'border-neon/50 text-neon',
     archiviato: 'border-warn/60 text-warn',
@@ -18,7 +19,7 @@ export function StatusBadge({ status }: { status: Status }) {
   const Icon = { attivo: CheckCircle2, archiviato: Archive, sperimentale: FlaskConical }[status];
   return (
     <span className={`inline-flex items-center gap-1 border px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${style}`}>
-      <Icon size={11} /> {STATUSES[status]}
+      <Icon size={11} /> {t.statuses[status]}
     </span>
   );
 }
@@ -48,15 +49,16 @@ export function Emblem({ text, accent, avatar, size = 48 }: { text: string; acce
 }
 
 export function LevelIcon({ level }: { level: FeatureLevel }) {
+  const { t } = useI18n();
   switch (level) {
     case 'yes':
-      return <CheckCircle2 size={16} className="text-neon" aria-label="Sì" />;
+      return <CheckCircle2 size={16} className="text-neon" aria-label={t.level.yes} />;
     case 'partial':
-      return <CircleDashed size={16} className="text-flipper" aria-label="Parziale" />;
+      return <CircleDashed size={16} className="text-flipper" aria-label={t.level.partial} />;
     case 'no':
-      return <XCircle size={16} className="text-warn" aria-label="No" />;
+      return <XCircle size={16} className="text-warn" aria-label={t.level.no} />;
     default:
-      return <MinusCircle size={16} className="text-dim" aria-label="Non applicabile" />;
+      return <MinusCircle size={16} className="text-dim" aria-label={t.level.na} />;
   }
 }
 

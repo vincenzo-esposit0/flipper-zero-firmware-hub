@@ -1,9 +1,9 @@
 import { Download, ExternalLink, FolderGit2, Scale, ShieldAlert, Star } from 'lucide-react';
 import { useState } from 'react';
-import { CATEGORIES, DIFFICULTIES } from '../data/firmwares';
 import type { Entry } from '../data/types';
-import { formatStars, timeAgo } from '../lib/format';
+import { formatStars } from '../lib/format';
 import type { RepoInfo } from '../lib/github';
+import { useI18n } from '../lib/i18n';
 import { useSettings } from '../lib/settings';
 import { effectiveStatus } from './FirmwareCard';
 import { InstallGuide } from './InstallationModal';
@@ -15,11 +15,12 @@ type Tab = 'overview' | 'diff' | 'ethics' | 'install';
 export function DetailModal({ entry, info, onClose }: { entry: Entry; info?: RepoInfo; onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('overview');
   const { click } = useSettings();
+  const { t, ago } = useI18n();
   const tabs: [Tab, string][] = [
-    ['overview', 'Panoramica'],
-    ...(entry.differences ? ([['diff', 'Differenze']] as [Tab, string][]) : []),
-    ['ethics', 'Sicurezza & Etica'],
-    ['install', 'Installazione'],
+    ['overview', t.detail.overview],
+    ...(entry.differences ? ([['diff', t.detail.differences]] as [Tab, string][]) : []),
+    ['ethics', t.detail.ethics],
+    ['install', t.detail.install],
   ];
 
   return (
@@ -32,16 +33,16 @@ export function DetailModal({ entry, info, onClose }: { entry: Entry; info?: Rep
             <StatusBadge status={effectiveStatus(entry, info)} />
           </div>
           <p className="text-xs text-cyan">
-            {CATEGORIES[entry.category]} · {DIFFICULTIES[entry.difficulty]}
+            {t.categories[entry.category]} · {t.difficulties[entry.difficulty]}
           </p>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-dim">
             <span className="flex items-center gap-1 text-flipper">
               <Star size={12} /> {formatStars(info?.stars)}
             </span>
-            <span>push {timeAgo(info?.pushedAt)}</span>
+            <span>push {ago(info?.pushedAt)}</span>
             {info?.release && (
               <span>
-                release <span className="text-neon">{info.release.tag}</span> ({timeAgo(info.release.publishedAt)})
+                release <span className="text-neon">{info.release.tag}</span> ({ago(info.release.publishedAt)})
               </span>
             )}
             {info?.license && (
@@ -59,7 +60,7 @@ export function DetailModal({ entry, info, onClose }: { entry: Entry; info?: Rep
         </a>
         {entry.homepage && (
           <a className="btn btn-cyan" href={entry.homepage} target="_blank" rel="noreferrer">
-            <ExternalLink size={12} /> sito
+            <ExternalLink size={12} /> {t.detail.website}
           </a>
         )}
         {info?.release && (

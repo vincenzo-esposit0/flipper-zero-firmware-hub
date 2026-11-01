@@ -1,7 +1,9 @@
 import { X } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
+import { useI18n } from '../lib/i18n';
 
 export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  const { t } = useI18n();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', onKey);
@@ -28,7 +30,7 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
             <span className="h-2 w-2 bg-neon" />
             <span className="ml-2 truncate">~/{title.toLowerCase().replace(/\s+/g, '-')}</span>
           </span>
-          <button className="text-dim hover:text-warn" onClick={onClose} aria-label="Chiudi">
+          <button className="text-dim hover:text-warn" onClick={onClose} aria-label={t.common.close}>
             <X size={16} />
           </button>
         </div>

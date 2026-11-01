@@ -67,6 +67,7 @@ Il token serve solo in build per alzare il rate limit e **non** finisce nel bund
 
 - **Nuova repository:** aggiungi un oggetto `Entry` in `src/data/firmwares.ts`. Lo script di prefetch la rileva da solo.
 - **Nuovo laboratorio:** segui lo schema commentato in `src/data/labs.ts`.
+- **Traduzioni:** il sito è in italiano e inglese (pulsante IT/EN nell'header). I testi dell'interfaccia sono in `src/data/strings.ts`, l'inglese delle schede in `src/data/firmwares.en.ts`: una scheda senza traduzione viene mostrata in italiano.
 
 ## Nota etica
 

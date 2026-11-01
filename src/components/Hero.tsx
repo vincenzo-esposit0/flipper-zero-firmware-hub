@@ -1,7 +1,9 @@
-import { ArrowDown, BookOpen, Columns3, Info, LayoutGrid, ShieldCheck, X } from 'lucide-react';
+import { ArrowDown, BookOpen, Columns3, Cpu, Info, LayoutGrid, ShieldCheck, X } from 'lucide-react';
 import { useState } from 'react';
 import { ENTRIES, FIRMWARES } from '../data/firmwares';
 import { LABS } from '../data/labs';
+import { EMULATOR_URL } from '../data/strings';
+import { useI18n } from '../lib/i18n';
 import { useSettings } from '../lib/settings';
 
 const FLIPPER_IMG = `${import.meta.env.BASE_URL}flipper.webp`;
@@ -71,6 +73,7 @@ function FlipperArt() {
 
 export function Hero() {
   const { click } = useSettings();
+  const { t } = useI18n();
   const [hidden, setHidden] = useState(() => {
     try {
       return localStorage.getItem(STORAGE_KEY) === '1';
@@ -95,7 +98,7 @@ export function Hero() {
         onClick={() => setHiddenStored(false)}
         className="mb-6 flex items-center gap-2 text-sm text-dim hover:text-neon"
       >
-        <Info size={15} /> Cos'è Flipper Zero Firmware Hub? Mostra introduzione
+        <Info size={15} /> {t.hero.show}
       </button>
     );
   }
@@ -108,8 +111,8 @@ export function Hero() {
       <button
         onClick={() => setHiddenStored(true)}
         className="absolute right-3 top-3 p-1.5 text-dim hover:text-warn"
-        aria-label="Nascondi introduzione"
-        title="Nascondi introduzione"
+        aria-label={t.hero.hide}
+        title={t.hero.hide}
       >
         <X size={18} />
       </button>
@@ -119,22 +122,21 @@ export function Hero() {
           <span className="text-neon">root@fz-hub</span>:<span className="text-cyan">~</span>$ cat MISSION.md
         </p>
         <h1 id="hero-title" className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">
-          Tutto il software per <span className="text-flipper glow">Flipper Zero</span>, spiegato per chi studia.
+          {t.hero.titleBefore}<span className="text-flipper glow">Flipper Zero</span>{t.hero.titleAfter}
         </h1>
         <p className="mt-4 max-w-xl font-sans text-lg leading-relaxed text-ink/85">
-          Una piattaforma didattica che raccoglie i firmware e le repository più valide della community, le confronta
-          in modo trasparente e spiega come installarle e usarle <strong className="text-neon">in modo legale e responsabile</strong>.
+          {t.hero.introBefore}<strong className="text-neon">{t.hero.introStrong}</strong>{t.hero.introAfter}
         </p>
 
         <ul className="mt-5 grid gap-2 font-sans text-base text-ink/85 sm:grid-cols-3">
           <li className="flex items-center gap-2">
-            <LayoutGrid size={16} className="shrink-0 text-neon" /> Esplora il catalogo
+            <LayoutGrid size={16} className="shrink-0 text-neon" /> {t.hero.pointCatalog}
           </li>
           <li className="flex items-center gap-2">
-            <Columns3 size={16} className="shrink-0 text-cyan" /> Confronta i firmware
+            <Columns3 size={16} className="shrink-0 text-cyan" /> {t.hero.pointCompare}
           </li>
           <li className="flex items-center gap-2">
-            <ShieldCheck size={16} className="shrink-0 text-flipper" /> Impara con le regole
+            <ShieldCheck size={16} className="shrink-0 text-flipper" /> {t.hero.pointRules}
           </li>
         </ul>
 
@@ -146,21 +148,26 @@ export function Hero() {
             }}
             className="btn btn-neon"
           >
-            <ArrowDown size={15} /> Esplora il catalogo
+            <ArrowDown size={15} /> {t.hero.ctaCatalog}
           </button>
           <a href="#/compare" onClick={() => click(700)} className="btn btn-cyan">
-            <Columns3 size={15} /> Confronta firmware
+            <Columns3 size={15} /> {t.hero.ctaCompare}
           </a>
           <a href="#/lab" onClick={() => click(700)} className="btn btn-flipper">
-            <BookOpen size={15} /> Lab Guide
+            <BookOpen size={15} /> {t.hero.ctaLab}
+          </a>
+          <a href={EMULATOR_URL} target="_blank" rel="noreferrer" onClick={() => click(700)} className="btn btn-ghost">
+            <Cpu size={15} /> {t.hero.ctaEmulator}
+            <span className="sr-only">{t.common.newTab}</span>
           </a>
         </div>
+        <p className="mt-3 max-w-xl font-sans text-sm text-dim">{t.hero.emulatorNote}</p>
 
         <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-4">
           {[
-            [FIRMWARES.length, 'firmware'],
-            [ENTRIES.length - FIRMWARES.length, 'app e risorse'],
-            [LABS.length, 'laboratori'],
+            [FIRMWARES.length, t.hero.statFirmware],
+            [ENTRIES.length - FIRMWARES.length, t.hero.statApps],
+            [LABS.length, t.hero.statLabs],
           ].map(([n, label]) => (
             <div key={label}>
               <dt className="text-xs uppercase tracking-widest text-dim">{label}</dt>

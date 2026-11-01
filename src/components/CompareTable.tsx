@@ -1,7 +1,7 @@
-import { FEATURES, FIRMWARES } from '../data/firmwares';
 import type { FeatureKey } from '../data/types';
-import { formatStars, timeAgo } from '../lib/format';
+import { formatStars } from '../lib/format';
 import { useGithub } from '../lib/githubContext';
+import { useI18n } from '../lib/i18n';
 import { useSettings } from '../lib/settings';
 import { useState } from 'react';
 import { effectiveStatus } from './FirmwareCard';
@@ -12,8 +12,9 @@ const MAX = 3;
 export function CompareTable() {
   const { repos } = useGithub();
   const { click } = useSettings();
+  const { t, firmwares, ago } = useI18n();
   const [selected, setSelected] = useState<string[]>(['official', 'unleashed', 'momentum']);
-  const cols = FIRMWARES.filter((f) => selected.includes(f.id));
+  const cols = firmwares.filter((f) => selected.includes(f.id));
 
   const toggle = (id: string) => {
     click(560);
@@ -25,11 +26,11 @@ export function CompareTable() {
       <SectionTitle
         prompt="diff --side-by-side --max=3"
         title="Compare Matrix"
-        sub="Seleziona fino a tre firmware da confrontare. Le righe live (stelle, ultimo push, release) arrivano dall'API di GitHub."
+        sub={t.compare.sub}
       />
 
       <div className="mb-4 flex flex-wrap gap-1.5">
-        {FIRMWARES.map((f) => {
+        {firmwares.map((f) => {
           const on = selected.includes(f.id);
           return (
             <button
@@ -45,15 +46,15 @@ export function CompareTable() {
       </div>
 
       {cols.length === 0 ? (
-        <p className="panel p-8 text-center text-sm text-dim">Seleziona almeno un firmware.</p>
+        <p className="panel p-8 text-center text-sm text-dim">{t.compare.selectOne}</p>
       ) : (
         <>
-        <p className="mb-2 text-sm text-dim md:hidden">Scorri la tabella in orizzontale →</p>
+        <p className="mb-2 text-sm text-dim md:hidden">{t.compare.scroll}</p>
         <div className="panel overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-line">
-                <th className="sticky left-0 z-10 w-56 bg-panel p-3 text-left text-xs font-normal uppercase tracking-widest text-dim">Caratteristica</th>
+                <th className="sticky left-0 z-10 w-56 bg-panel p-3 text-left text-xs font-normal uppercase tracking-widest text-dim">{t.compare.feature}</th>
                 {cols.map((f) => (
                   <th key={f.id} className="p-3 text-left font-normal">
                     <div className="flex items-center gap-2">
@@ -72,9 +73,9 @@ export function CompareTable() {
               </tr>
             </thead>
             <tbody>
-              {(Object.keys(FEATURES) as FeatureKey[]).map((k) => (
+              {(Object.keys(t.features) as FeatureKey[]).map((k) => (
                 <tr key={k} className="border-b border-line/60 hover:bg-neon/[0.03]">
-                  <th className="sticky left-0 z-10 bg-panel p-3 text-left text-sm font-normal text-cyan">{FEATURES[k]}</th>
+                  <th className="sticky left-0 z-10 bg-panel p-3 text-left text-sm font-normal text-cyan">{t.features[k]}</th>
                   {cols.map((f) => {
                     const v = f.features?.[k];
                     return (
@@ -92,10 +93,10 @@ export function CompareTable() {
                   })}
                 </tr>
               ))}
-              <LiveRow label="★ Stelle GitHub" cols={cols.map((f) => formatStars(repos[f.repo]?.stars))} />
-              <LiveRow label="Ultimo push" cols={cols.map((f) => timeAgo(repos[f.repo]?.pushedAt))} />
-              <LiveRow label="Ultima release" cols={cols.map((f) => repos[f.repo]?.release?.tag ?? '—')} />
-              <LiveRow label="Issue aperte" cols={cols.map((f) => String(repos[f.repo]?.openIssues ?? '—'))} />
+              <LiveRow label={t.compare.stars} cols={cols.map((f) => formatStars(repos[f.repo]?.stars))} />
+              <LiveRow label={t.compare.lastPush} cols={cols.map((f) => ago(repos[f.repo]?.pushedAt))} />
+              <LiveRow label={t.compare.lastRelease} cols={cols.map((f) => repos[f.repo]?.release?.tag ?? '—')} />
+              <LiveRow label={t.compare.openIssues} cols={cols.map((f) => String(repos[f.repo]?.openIssues ?? '—'))} />
             </tbody>
           </table>
         </div>
@@ -103,10 +104,10 @@ export function CompareTable() {
       )}
 
       <p className="mt-3 flex flex-wrap gap-4 text-xs text-dim">
-        <span className="flex items-center gap-1"><LevelIcon level="yes" /> supportato</span>
-        <span className="flex items-center gap-1"><LevelIcon level="partial" /> parziale</span>
-        <span className="flex items-center gap-1"><LevelIcon level="no" /> assente</span>
-        <span className="flex items-center gap-1"><LevelIcon level="na" /> n/d</span>
+        <span className="flex items-center gap-1"><LevelIcon level="yes" /> {t.compare.supported}</span>
+        <span className="flex items-center gap-1"><LevelIcon level="partial" /> {t.compare.partial}</span>
+        <span className="flex items-center gap-1"><LevelIcon level="no" /> {t.compare.absent}</span>
+        <span className="flex items-center gap-1"><LevelIcon level="na" /> {t.compare.na}</span>
       </p>
     </section>
   );

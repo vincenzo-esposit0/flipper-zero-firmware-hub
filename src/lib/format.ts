@@ -1,12 +1,11 @@
-const rtf = new Intl.RelativeTimeFormat('it', { numeric: 'auto' });
-
 export function formatStars(n?: number) {
   if (n === undefined) return '—';
   return n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n);
 }
 
-export function timeAgo(iso?: string) {
+export function timeAgo(iso: string | undefined, locale: string, justNow: string) {
   if (!iso) return '—';
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
   const diff = (new Date(iso).getTime() - Date.now()) / 1000;
   const units: [Intl.RelativeTimeFormatUnit, number][] = [
     ['year', 31536000],
@@ -19,5 +18,5 @@ export function timeAgo(iso?: string) {
   for (const [unit, secs] of units) {
     if (Math.abs(diff) >= secs) return rtf.format(Math.round(diff / secs), unit);
   }
-  return 'adesso';
+  return justNow;
 }

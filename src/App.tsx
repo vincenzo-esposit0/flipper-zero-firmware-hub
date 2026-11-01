@@ -10,29 +10,30 @@ import { Hero } from './components/Hero';
 import { InstallationModal } from './components/InstallationModal';
 import { LabGuide } from './components/LabGuide';
 import { SectionTitle } from './components/ui';
-import { ENTRIES } from './data/firmwares';
 import type { Category } from './data/types';
 import { go, useHashRoute } from './hooks/useHashRoute';
 import { useGithub } from './lib/githubContext';
+import { useI18n } from './lib/i18n';
 import { useSettings } from './lib/settings';
 
 export default function App() {
   const route = useHashRoute();
   const { crt } = useSettings();
   const { repos, state: syncState } = useGithub();
+  const { t, entries } = useI18n();
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [installId, setInstallId] = useState<string | null>(null);
 
   const counts = useMemo(() => {
     const c: Partial<Record<Category, number>> = {};
-    ENTRIES.forEach((e) => (c[e.category] = (c[e.category] ?? 0) + 1));
+    entries.forEach((e) => (c[e.category] = (c[e.category] ?? 0) + 1));
     return c;
-  }, []);
+  }, [entries]);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const list = ENTRIES.filter((e) => {
+    const list = entries.filter((e) => {
       const status = effectiveStatus(e, repos[e.repo]);
       if (filters.categories.length && !filters.categories.includes(e.category)) return false;
       if (filters.difficulties.length && !filters.difficulties.includes(e.difficulty)) return false;
@@ -48,10 +49,10 @@ export default function App() {
       name: (a: (typeof list)[0], b: (typeof list)[0]) => a.name.localeCompare(b.name),
     }[filters.sort];
     return [...list].sort(by);
-  }, [query, filters, repos]);
+  }, [query, filters, repos, entries]);
 
-  const detail = route.view === 'directory' && route.detail ? ENTRIES.find((e) => e.id === route.detail) : undefined;
-  const install = installId ? ENTRIES.find((e) => e.id === installId) : undefined;
+  const detail = route.view === 'directory' && route.detail ? entries.find((e) => e.id === route.detail) : undefined;
+  const install = installId ? entries.find((e) => e.id === installId) : undefined;
 
   return (
     <div className={crt ? 'crt min-h-screen' : 'min-h-screen'}>
@@ -63,14 +64,14 @@ export default function App() {
           <section id="catalogo" className="scroll-mt-28">
             <SectionTitle
               prompt="ls -la ./firmware ./apps ./scripts"
-              title="Catalogo firmware e repository"
-              sub="Firmware completi, app native, script e risorse per Flipper Zero, catalogati per uso didattico. Dati live da GitHub con cache locale."
+              title={t.catalog.title}
+              sub={t.catalog.sub}
             />
             <FilterBar
               filters={filters}
               onChange={setFilters}
               counts={counts}
-              total={ENTRIES.length}
+              total={entries.length}
               shown={visible.length}
             />
             {visible.length ? (

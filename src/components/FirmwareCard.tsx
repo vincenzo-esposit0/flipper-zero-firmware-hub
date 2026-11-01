@@ -1,8 +1,8 @@
 import { AlertTriangle, ArrowRight, Download, FolderGit2, Star, Terminal, Wrench } from 'lucide-react';
-import { CATEGORIES, DIFFICULTIES } from '../data/firmwares';
 import type { Entry } from '../data/types';
-import { formatStars, timeAgo } from '../lib/format';
+import { formatStars } from '../lib/format';
 import type { RepoInfo } from '../lib/github';
+import { useI18n } from '../lib/i18n';
 import { useSettings } from '../lib/settings';
 import { Emblem, StatusBadge, Tag } from './ui';
 
@@ -25,6 +25,7 @@ export function FirmwareCard({
   missing?: boolean;
 }) {
   const { click } = useSettings();
+  const { t, ago } = useI18n();
   const download = info?.release?.asset?.url ?? info?.release?.htmlUrl;
   const openDetail = () => {
     click(900);
@@ -46,7 +47,7 @@ export function FirmwareCard({
           </div>
           <p className="truncate text-sm text-dim">{entry.repo}</p>
           <p className="mt-0.5 text-xs uppercase tracking-widest text-cyan">
-            {CATEGORIES[entry.category]} · {DIFFICULTIES[entry.difficulty]}
+            {t.categories[entry.category]} · {t.difficulties[entry.difficulty]}
           </p>
         </div>
       </div>
@@ -55,25 +56,25 @@ export function FirmwareCard({
 
       {missing && (
         <p className="mt-3 flex items-center gap-2 border border-warn/40 bg-warn/5 px-2.5 py-1.5 text-sm text-warn">
-          <AlertTriangle size={15} className="shrink-0" /> Repository non raggiungibile su GitHub (rimossa, rinominata o privata)
+          <AlertTriangle size={15} className="shrink-0" /> {t.card.missing}
         </p>
       )}
 
       <dl className="mt-4 grid grid-cols-3 gap-px border border-line bg-line text-center text-sm">
         <div className="bg-void px-1 py-2">
-          <dt className="text-xs text-dim">Stelle</dt>
+          <dt className="text-xs text-dim">{t.card.stars}</dt>
           <dd className="flex items-center justify-center gap-1 text-flipper">
             <Star size={13} /> {formatStars(info?.stars)}
           </dd>
         </div>
         <div className="bg-void px-1 py-2">
-          <dt className="text-xs text-dim">Ultimo push</dt>
-          <dd className="truncate text-ink">{timeAgo(info?.pushedAt)}</dd>
+          <dt className="text-xs text-dim">{t.card.lastPush}</dt>
+          <dd className="truncate text-ink">{ago(info?.pushedAt)}</dd>
         </div>
         <div className="bg-void px-1 py-2">
-          <dt className="text-xs text-dim">Release</dt>
+          <dt className="text-xs text-dim">{t.card.release}</dt>
           <dd className="truncate text-neon" title={info?.release?.tag}>
-            {info || missing ? (info?.release?.tag ?? 'n/d') : '…'}
+            {info || missing ? (info?.release?.tag ?? t.card.na) : '…'}
           </dd>
         </div>
       </dl>
@@ -85,7 +86,7 @@ export function FirmwareCard({
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-1.5">
-        <a href={`https://github.com/${entry.repo}`} target="_blank" rel="noreferrer" className="btn btn-ghost justify-center" title="Apri la repository su GitHub">
+        <a href={`https://github.com/${entry.repo}`} target="_blank" rel="noreferrer" className="btn btn-ghost justify-center" title={t.card.openRepo}>
           <FolderGit2 size={15} /> GitHub
         </a>
         <button
@@ -95,34 +96,35 @@ export function FirmwareCard({
           }}
           className="btn btn-cyan justify-center"
         >
-          <Wrench size={15} /> Installa
+          <Wrench size={15} /> {t.card.install}
         </button>
         {download ? (
-          <a href={download} target="_blank" rel="noreferrer" className="btn btn-flipper justify-center" title={info?.release?.asset?.name ?? 'Pagina release'}>
-            <Download size={15} /> Scarica
+          <a href={download} target="_blank" rel="noreferrer" className="btn btn-flipper justify-center" title={info?.release?.asset?.name ?? t.card.releasePage}>
+            <Download size={15} /> {t.card.download}
           </a>
         ) : (
-          <span className="btn btn-ghost cursor-not-allowed justify-center opacity-40" title="Nessuna release pubblicata">
-            <Download size={15} /> Scarica
+          <span className="btn btn-ghost cursor-not-allowed justify-center opacity-40" title={t.card.noRelease}>
+            <Download size={15} /> {t.card.download}
           </span>
         )}
       </div>
       <button onClick={openDetail} className="btn btn-neon mt-1.5 w-full justify-center">
-        Scheda completa <ArrowRight size={15} />
+        {t.card.details} <ArrowRight size={15} />
       </button>
     </article>
   );
 }
 
 export function EmptyState({ onReset }: { onReset: () => void }) {
+  const { t } = useI18n();
   return (
     <div className="panel p-10 text-center text-base text-dim">
       <Terminal className="mx-auto mb-3 text-warn" />
       <p>
-        <span className="text-warn">grep:</span> nessun risultato con questi filtri.
+        <span className="text-warn">grep:</span> {t.card.emptyPrefix}
       </p>
       <button className="btn btn-neon mt-4" onClick={onReset}>
-        Azzera ricerca e filtri
+        {t.card.emptyReset}
       </button>
     </div>
   );
