@@ -2,6 +2,8 @@
 
 Piattaforma web didattica, in stile terminale/CRT, che raccoglie, cataloga e confronta firmware e repository per **Flipper Zero**.
 
+Demo: **https://vincenzo-esposit0.github.io/flipper-zero-firmware-hub/** · Emulatore collegato: [dryflash](https://github.com/vincenzo-esposit0/dryflash-FZ), per provare un firmware nel browser prima di installarlo.
+
 Stack: **React 18 + Vite 5 + TypeScript + Tailwind CSS 3 + lucide-react**. È un sito 100% statico, senza backend.
 
 ## Struttura
