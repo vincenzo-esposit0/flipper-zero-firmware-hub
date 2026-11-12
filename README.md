@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vincenzo-esposit0.github.io/flipper-zero-firmware-hub/"><b>🌐 Live demo</b></a> ·
+  <a href="https://esposito-vincenzo.it/flipper-zero-firmware-hub/"><b>🌐 Live demo</b></a> ·
   <a href="https://github.com/vincenzo-esposit0/dryflash-FZ"><b>🧪 dryflash emulator</b></a> ·
   <a href="#run-it-locally"><b>⚙️ Run locally</b></a>
 </p>
@@ -115,4 +115,4 @@ MIT. See [LICENSE](LICENSE).
 
 ---
 
-<sub>Vincenzo Esposito · <a href="https://vincenzo-esposit0.github.io/">Website</a> · <a href="https://www.linkedin.com/in/vincenzo-e">LinkedIn</a></sub>
+<sub>Vincenzo Esposito · <a href="https://esposito-vincenzo.it/">Website</a> · <a href="https://www.linkedin.com/in/vincenzo-e">LinkedIn</a></sub>
