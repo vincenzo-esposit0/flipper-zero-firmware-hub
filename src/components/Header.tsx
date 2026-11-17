@@ -1,9 +1,12 @@
 import { BookOpen, Columns3, Cpu, ExternalLink, LayoutGrid, MonitorDot, RefreshCw, Search, Volume2, VolumeX, X } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import { useEffect, useRef } from 'react';
 import { go, type Route } from '../hooks/useHashRoute';
 import { EMULATOR_URL } from '../data/strings';
 import { useGithub } from '../lib/githubContext';
 import { useI18n } from '../lib/i18n';
+import { MOTION_OK } from '../lib/motion';
 import { useSettings } from '../lib/settings';
 import { TypingText } from './TypingText';
 
@@ -26,6 +29,20 @@ export function Header({ route, query, onQuery }: { route: Route; query: string;
   const { state, refresh } = useGithub();
   const { lang, toggleLang, t } = useI18n();
   const searchRef = useRef<HTMLInputElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+
+  // Barra di avanzamento della lettura sul bordo inferiore dello header
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add(MOTION_OK, () => {
+      gsap.fromTo(
+        progressRef.current,
+        { scaleX: 0 },
+        { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } },
+      );
+    });
+    return () => mm.revert();
+  });
 
   // "/" porta il focus sulla ricerca, come su GitHub
   useEffect(() => {
@@ -160,6 +177,7 @@ export function Header({ route, query, onQuery }: { route: Route; query: string;
           <TypingText lines={COMMANDS} />
         </p>
       </div>
+      <div ref={progressRef} aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-neon shadow-neon" />
     </header>
   );
 }

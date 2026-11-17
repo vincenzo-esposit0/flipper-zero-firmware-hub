@@ -33,7 +33,15 @@ export function FirmwareCard({
   };
 
   return (
-    <article className="panel group flex min-w-0 flex-col p-5 transition hover:border-neon/50 hover:shadow-neon">
+    <article
+      data-reveal
+      onPointerMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
+      }}
+      className="panel spotlight group relative flex min-w-0 flex-col p-5 transition-[border-color,box-shadow] duration-300 hover:border-neon/50 hover:shadow-neon"
+    >
       <div className="flex items-start gap-3">
         <Emblem text={entry.emblem} accent={entry.accent} avatar={info?.avatar} size={52} />
         <div className="min-w-0 flex-1">

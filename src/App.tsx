@@ -1,4 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CompareTable } from './components/CompareTable';
 import { DetailModal } from './components/DetailModal';
 import { EMPTY_FILTERS, FilterBar, type Filters } from './components/FilterBar';
@@ -14,6 +17,7 @@ import type { Category } from './data/types';
 import { go, useHashRoute } from './hooks/useHashRoute';
 import { useGithub } from './lib/githubContext';
 import { useI18n } from './lib/i18n';
+import { MOTION_OK, useMotion, useReveal } from './lib/motion';
 import { useSettings } from './lib/settings';
 
 export default function App() {
@@ -21,6 +25,9 @@ export default function App() {
   const { crt } = useSettings();
   const { repos, state: syncState } = useGithub();
   const { t, entries } = useI18n();
+  const { scrollTo } = useMotion();
+  const mainRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [installId, setInstallId] = useState<string | null>(null);
@@ -51,6 +58,34 @@ export default function App() {
     return [...list].sort(by);
   }, [query, filters, repos, entries]);
 
+  // Cambiando sezione si riparte dall'alto, con una breve dissolvenza
+  const firstView = useRef(true);
+  useEffect(() => {
+    if (firstView.current) {
+      firstView.current = false;
+      return;
+    }
+    scrollTo(0, { immediate: true });
+  }, [route.view, scrollTo]);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        gsap.from(mainRef.current, { autoAlpha: 0, duration: 0.5, ease: 'power2.out' });
+      });
+      return () => mm.revert();
+    },
+    { dependencies: [route.view], revertOnUpdate: true },
+  );
+
+  // Le schede che entrano (anche dopo un filtro) compaiono scorrendo; poi si ricalcolano le posizioni
+  const visibleKey = visible.map((e) => e.id).join();
+  useReveal(gridRef, [visibleKey, route.view]);
+  useEffect(() => {
+    ScrollTrigger.refresh();
+  }, [visibleKey]);
+
   const detail = route.view === 'directory' && route.detail ? entries.find((e) => e.id === route.detail) : undefined;
   const install = installId ? entries.find((e) => e.id === installId) : undefined;
 
@@ -58,7 +93,7 @@ export default function App() {
     <div className={crt ? 'crt min-h-screen' : 'min-h-screen'}>
       <Header route={route} query={query} onQuery={setQuery} />
 
-      <main id="main" className="mx-auto max-w-7xl px-4 py-8">
+      <main ref={mainRef} id="main" className="mx-auto max-w-7xl px-4 py-8">
         {route.view === 'directory' && <Hero />}
         {route.view === 'directory' && (
           <section id="catalogo" className="scroll-mt-28">
@@ -75,7 +110,7 @@ export default function App() {
               shown={visible.length}
             />
             {visible.length ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div ref={gridRef} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {visible.map((e) => (
                   <FirmwareCard
                     key={e.id}

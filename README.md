@@ -23,7 +23,7 @@
 | **What it is** | A static web platform that catalogues 17 firmware builds, apps, scripts and resources for Flipper Zero, with live GitHub data |
 | **Who it is for** | Students and newcomers who want to understand the ecosystem before installing anything |
 | **My role** | Sole author: concept, research and curation, UX and visual design, front-end development, CI/CD |
-| **Stack** | React 18 · TypeScript · Vite 5 · Tailwind CSS 3 · GitHub Actions · GitHub Pages |
+| **Stack** | React 18 · TypeScript · Vite 5 · Tailwind CSS 3 · GSAP · Lenis · GitHub Actions · GitHub Pages |
 | **Highlights** | Side-by-side comparison matrix · Italian and English · live data with a three-level cache · no backend, no tracking |
 | **Companion project** | [dryflash](https://github.com/vincenzo-esposit0/dryflash-FZ), my in-browser emulator for trying firmware before flashing it |
 

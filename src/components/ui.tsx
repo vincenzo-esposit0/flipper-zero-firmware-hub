@@ -1,6 +1,8 @@
 import { Archive, CheckCircle2, CircleDashed, FlaskConical, MinusCircle, XCircle } from 'lucide-react';
 import type { Accent, FeatureLevel, Status } from '../data/types';
+import { useRef } from 'react';
 import { useI18n } from '../lib/i18n';
+import { useReveal, useScramble } from '../lib/motion';
 
 export const ACCENT_TEXT: Record<Accent, string> = {
   neon: 'text-neon border-neon/50',
@@ -63,12 +65,17 @@ export function LevelIcon({ level }: { level: FeatureLevel }) {
 }
 
 export function SectionTitle({ prompt, title, sub }: { prompt: string; title: string; sub?: string }) {
+  const box = useRef<HTMLDivElement>(null);
+  const cmd = useRef<HTMLSpanElement>(null);
+  useScramble(cmd);
+  useReveal(box);
   return (
-    <div className="mb-6">
-      <p className="text-sm text-dim">        <span className="text-neon">root@fz-hub</span>:<span className="text-cyan">~</span>$ {prompt}
+    <div ref={box} className="mb-6">
+      <p className="text-sm text-dim">
+        <span className="text-neon">root@fz-hub</span>:<span className="text-cyan">~</span>$ <span ref={cmd}>{prompt}</span>
       </p>
-      <h2 className="mt-1 font-display text-3xl text-ink sm:text-4xl">{title}</h2>
-      {sub && <p className="mt-2 max-w-3xl font-sans text-lg text-dim">{sub}</p>}
+      <h2 data-reveal className="mt-1 font-display text-3xl text-ink sm:text-4xl">{title}</h2>
+      {sub && <p data-reveal className="mt-2 max-w-3xl font-sans text-lg text-dim">{sub}</p>}
     </div>
   );
 }

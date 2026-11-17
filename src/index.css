@@ -4,6 +4,8 @@
 
 @layer base {
   html { color-scheme: dark; font-size: 17px; scroll-behavior: smooth; }
+  /* Con Lenis attivo lo scroll morbido lo gestisce lui */
+  html.lenis { scroll-behavior: auto; }
   @media (min-width: 1280px) { html { font-size: 18px; } }
   body {
     @apply bg-void text-ink font-mono antialiased;
@@ -39,6 +41,19 @@
   }
   .chip-off { @apply border-line text-dim hover:border-neon/40 hover:text-neon; }
   .chip-on { @apply border-neon bg-neon/10 text-neon shadow-neon; }
+
+  /* Alone che segue il puntatore sulle schede (coordinate impostate da JS) */
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%), rgba(0, 255, 102, 0.09), transparent 45%);
+  }
+  .spotlight:hover::before { opacity: 1; }
+  .spotlight > * { position: relative; }
 }
 
 /* Effetto CRT: scanline + vignettatura, attivabile dall'header */

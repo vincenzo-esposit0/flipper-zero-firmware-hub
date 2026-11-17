@@ -1,7 +1,8 @@
 import { ChevronDown, Clock, Cpu, FilePlus2, ShieldAlert } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { LABS, type Lab } from '../data/labs';
 import { useI18n } from '../lib/i18n';
+import { useReveal } from '../lib/motion';
 import { SectionTitle } from './ui';
 
 function List({ title, items, mark }: { title: string; items: string[]; mark: string }) {
@@ -57,6 +58,8 @@ function LabCard({ lab }: { lab: Lab }) {
 
 export function LabGuide() {
   const { t } = useI18n();
+  const rulesRef = useRef<HTMLDivElement>(null);
+  useReveal(rulesRef);
   return (
     <section>
       <SectionTitle
@@ -65,9 +68,9 @@ export function LabGuide() {
         sub={t.lab.sub}
       />
 
-      <div className="mb-6 grid gap-3 text-xs sm:grid-cols-3">
+      <div ref={rulesRef} className="mb-6 grid gap-3 text-xs sm:grid-cols-3">
         {t.lab.rules.map(([rule, d]) => (
-          <div key={rule} className="panel border-warn/30 p-3">
+          <div key={rule} data-reveal className="panel border-warn/30 p-3">
             <p className="mb-1 flex items-center gap-1.5 font-display text-base text-warn">
               <ShieldAlert size={13} /> {rule}
             </p>
